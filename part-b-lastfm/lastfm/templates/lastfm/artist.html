@@ -1,0 +1,40 @@
+{% extends 'lastfm/base.html' %}
+{% load humanize %}
+
+{% block content %}
+{% if error %}
+    <h1>{{ name }}</h1>
+    <p class="error">Error: {{ error }}</p>
+{% else %}
+    <div class="profile">
+        {% if artist.image %}<img src="{{ artist.image }}" width="150">{% endif %}
+        <div>
+            <h1>{{ artist.name }}</h1>
+            <p>{{ artist.listeners|intcomma }} listeners | {{ artist.playcount|intcomma }} plays</p>
+            <p>
+                {% for tag in artist.tags %}
+                    <span class="tag">{{ tag.name }}</span>
+                {% endfor %}
+            </p>
+            <a href="{{ artist.url }}" target="_blank">View on Last.fm</a>
+        </div>
+    </div>
+
+    <h2>About</h2>
+    <p>{{ artist.bio|striptags }}</p>
+
+    <h2>Top Tracks</h2>
+    <ol>
+        {% for track in top_tracks %}
+            <li><a href="{{ track.url }}" target="_blank">{{ track.name }}</a> - {{ track.playcount|intcomma }} plays</li>
+        {% endfor %}
+    </ol>
+
+    <h2>Similar Artists</h2>
+    <ul>
+        {% for similar in artist.similar %}
+            <li><a href="/artist/{{ similar.name }}/">{{ similar.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'lastfm/base.html' %}
+
+{% block content %}
+<h1>Weekly chart for {{ username }}</h1>
+
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+{% else %}
+    <p>{{ from_date|date:"j M Y" }} to {{ to_date|date:"j M Y" }}</p>
+
+    <div class="columns">
+        <div class="column">
+            <h2>Artists</h2>
+            <ol>
+                {% for artist in artists %}
+                    <li>{{ artist.name }} - {{ artist.playcount }} plays</li>
+                {% empty %}
+                    <p>Nothing this week.</p>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="column">
+            <h2>Tracks</h2>
+            <ol>
+                {% for track in tracks %}
+                    <li>{{ track.name }} by {{ track.artist }} - {{ track.playcount }} plays</li>
+                {% empty %}
+                    <p>Nothing this week.</p>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+{% endif %}
+
+<p><a href="{% url 'lastfm:user_profile' username %}">Back to profile</a></p>
+{% endblock %}

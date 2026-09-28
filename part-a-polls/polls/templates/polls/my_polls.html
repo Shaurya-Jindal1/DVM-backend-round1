@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>My Polls</h1>
+
+{% if questions %}
+    <table>
+        <tr>
+            <th>Question</th>
+            <th>Votes</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        {% for question in questions %}
+        <tr>
+            <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
+            <td>{{ question.total_votes }}</td>
+            <td>{% if question.is_closed %}Closed{% else %}Open{% endif %}</td>
+            <td>
+                {% if question.is_closed %}
+                    <a href="{% url 'polls:reopen_poll' question.id %}">Reopen</a>
+                {% else %}
+                    <a href="{% url 'polls:close_poll' question.id %}">Close</a>
+                {% endif %}
+                <a href="{% url 'polls:delete_poll' question.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>You haven't made any polls yet. <a href="{% url 'polls:create_poll' %}">Create one</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'lastfm/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<h1>Top Charts</h1>
+
+<form method="get">
+    <input type="text" name="country" value="{{ country }}" placeholder="e.g. India">
+    <select name="type">
+        <option value="artists" {% if type == 'artists' %}selected{% endif %}>Top Artists</option>
+        <option value="tracks" {% if type == 'tracks' %}selected{% endif %}>Top Tracks</option>
+    </select>
+    <button type="submit">Go</button>
+</form>
+
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+{% endif %}
+
+{% if results %}
+    <h2>Top {{ type }} in {{ country }}</h2>
+    <table>
+        {% for item in results %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{% if item.image %}<img src="{{ item.image }}" width="50">{% endif %}</td>
+            <td>
+                {% if type == 'tracks' %}
+                    <a href="{{ item.url }}" target="_blank">{{ item.name }}</a> by <a href="/artist/{{ item.artist }}/">{{ item.artist }}</a>
+                {% else %}
+                    <a href="/artist/{{ item.name }}/">{{ item.name }}</a>
+                {% endif %}
+            </td>
+            <td>{{ item.listeners|intcomma }} listeners</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="?country={{ country }}&type={{ type }}&page={{ page|add:-1 }}">Previous</a>
+        {% endif %}
+        Page {{ page }} of {{ total_pages }}
+        {% if page < total_pages %}
+            <a href="?country={{ country }}&type={{ type }}&page={{ page|add:1 }}">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

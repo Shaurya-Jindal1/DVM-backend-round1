@@ -1,0 +1,39 @@
+{% extends 'lastfm/base.html' %}
+
+{% block content %}
+<h1>Welcome to Last.fm Explorer</h1>
+<p>Find the top artists and tracks in any country, search for music, or look up a Last.fm user.</p>
+
+<div class="box">
+    <h2>Top charts by country</h2>
+    <form action="{% url 'lastfm:charts' %}" method="get">
+        <input type="text" name="country" placeholder="e.g. India">
+        <select name="type">
+            <option value="artists">Top Artists</option>
+            <option value="tracks">Top Tracks</option>
+        </select>
+        <button type="submit">Go</button>
+    </form>
+</div>
+
+<div class="box">
+    <h2>Search</h2>
+    <form action="{% url 'lastfm:search' %}" method="get">
+        <input type="text" name="q" placeholder="Search...">
+        <select name="type">
+            <option value="artist">Artist</option>
+            <option value="album">Album</option>
+            <option value="track">Track</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="box">
+    <h2>Look up a user</h2>
+    <form action="{% url 'lastfm:find_user' %}" method="get">
+        <input type="text" name="username" placeholder="Last.fm username">
+        <button type="submit">Go</button>
+    </form>
+</div>
+{% endblock %}

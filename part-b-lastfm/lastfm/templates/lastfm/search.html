@@ -1,0 +1,49 @@
+{% extends 'lastfm/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<h1>Search</h1>
+
+<form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search...">
+    <select name="type">
+        <option value="artist" {% if type == 'artist' %}selected{% endif %}>Artist</option>
+        <option value="album" {% if type == 'album' %}selected{% endif %}>Album</option>
+        <option value="track" {% if type == 'track' %}selected{% endif %}>Track</option>
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+{% endif %}
+
+{% if query and not error %}
+    <p>{{ total|intcomma }} results for "{{ query }}"</p>
+
+    {% for item in results %}
+        <div class="result">
+            {% if item.image %}<img src="{{ item.image }}" width="50">{% endif %}
+            {% if type == 'artist' %}
+                <a href="/artist/{{ item.name }}/">{{ item.name }}</a>
+            {% else %}
+                <a href="{{ item.url }}" target="_blank">{{ item.name }}</a>
+                by <a href="/artist/{{ item.artist }}/">{{ item.artist }}</a>
+            {% endif %}
+            {% if item.listeners %}<span class="small">({{ item.listeners|intcomma }} listeners)</span>{% endif %}
+        </div>
+    {% empty %}
+        <p>No results found.</p>
+    {% endfor %}
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="?q={{ query }}&type={{ type }}&page={{ page|add:-1 }}">Previous</a>
+        {% endif %}
+        Page {{ page }} of {{ total_pages }}
+        {% if page < total_pages %}
+            <a href="?q={{ query }}&type={{ type }}&page={{ page|add:1 }}">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

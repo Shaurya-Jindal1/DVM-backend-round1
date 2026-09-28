@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+    {% endfor %}
+</fieldset>
+
+{% if question.is_closed %}
+    <p>This poll is closed.</p>
+{% elif user_vote %}
+    <p>You voted for {{ user_vote.choice.choice_text }}</p>
+{% elif user.is_authenticated %}
+    <input type="submit" value="Vote">
+{% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to vote.</p>
+{% endif %}
+</form>
+
+<p><a href="{% url 'polls:results' question.id %}">See results</a></p>
+
+{% if user == question.owner %}
+    <p>
+        You created this poll:
+        {% if question.is_closed %}
+            <a href="{% url 'polls:reopen_poll' question.id %}">Reopen</a>
+        {% else %}
+            <a href="{% url 'polls:close_poll' question.id %}">Close</a>
+        {% endif %}
+        | <a href="{% url 'polls:delete_poll' question.id %}">Delete</a>
+    </p>
+{% endif %}
+{% endblock %}

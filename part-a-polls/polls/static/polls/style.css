@@ -1,0 +1,56 @@
+body {
+    background: white url("images/background.svg") no-repeat;
+    background-position: right bottom;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+li a {
+    color: green;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 10px;
+}
+
+.navbar a, .navbar span {
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    padding: 20px;
+}
+
+.message {
+    background-color: #dff0d8;
+    padding: 10px;
+    border: 1px solid #3c763d;
+}
+
+.closed {
+    color: red;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.pagination {
+    margin-top: 20px;
+}

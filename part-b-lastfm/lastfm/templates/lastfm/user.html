@@ -1,0 +1,69 @@
+{% extends 'lastfm/base.html' %}
+{% load humanize %}
+
+{% block content %}
+{% if error %}
+    <h1>{{ username }}</h1>
+    <p class="error">Error: {{ error }}</p>
+{% else %}
+    <div class="profile">
+        {% if profile.image %}<img src="{{ profile.image }}" width="100">{% endif %}
+        <div>
+            <h1>{{ profile.name }} {% if profile.realname %}({{ profile.realname }}){% endif %}</h1>
+            <p>
+                {{ profile.playcount|intcomma }} scrobbles | {{ profile.artist_count|intcomma }} artists
+                {% if profile.country and profile.country != 'None' %}| {{ profile.country }}{% endif %}
+            </p>
+            <p>Joined {{ profile.registered|date:"F Y" }}</p>
+            <a href="{{ profile.url }}" target="_blank">View on Last.fm</a> |
+            <a href="{% url 'lastfm:weekly_chart' profile.name %}">Weekly chart</a>
+        </div>
+    </div>
+
+    <form method="get">
+        <label>Time period:</label>
+        <select name="period">
+            {% for value, label in periods %}
+                <option value="{{ value }}" {% if value == period %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Change</button>
+    </form>
+
+    <div class="columns">
+        <div class="column">
+            <h2>Top Artists</h2>
+            <ol>
+                {% for artist in top_artists %}
+                    <li><a href="/artist/{{ artist.name }}/">{{ artist.name }}</a> - {{ artist.playcount }} plays</li>
+                {% empty %}
+                    <p>No artists for this period.</p>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="column">
+            <h2>Top Tracks</h2>
+            <ol>
+                {% for track in top_tracks %}
+                    <li>{{ track.name }} by {{ track.artist }} - {{ track.playcount }} plays</li>
+                {% empty %}
+                    <p>No tracks for this period.</p>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+    <h2>Recent Tracks</h2>
+    <table>
+        {% for track in recent_tracks %}
+        <tr {% if track.now_playing %}class="now-playing"{% endif %}>
+            <td>{% if track.image %}<img src="{{ track.image }}" width="40">{% endif %}</td>
+            <td>{{ track.name }}</td>
+            <td>{{ track.artist }}</td>
+            <td>{{ track.album }}</td>
+            <td>{% if track.now_playing %}Now playing{% else %}{{ track.date }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}
